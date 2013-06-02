@@ -27,15 +27,10 @@ Controller:
 $scope.authenticate = function (socialService) {
 
 	AzureMobileClient.login(function(isLoggedIn) {
-
 		if (isLoggedIn)
-
 		{
-
 			[Code you want to execute on successful login]
-
 		}
-
 	}, socialService);
 
 };
@@ -51,7 +46,9 @@ View:
 
 Controller:
 
-`$scope.signOut = function() {		
+```javascript
+$scope.signOut = function() {		
 	AzureMobileClient.logout();
-}`
+}
+```
 
