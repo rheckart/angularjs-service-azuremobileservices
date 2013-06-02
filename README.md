@@ -23,8 +23,7 @@ View:
 
 Controller:
 
-`$scope.authenticate = function (socialService) {
-		
+`$scope.authenticate = function (socialService) {		
 	AzureMobileClient.login(function(isLoggedIn) {
 		if (isLoggedIn)
 		{
