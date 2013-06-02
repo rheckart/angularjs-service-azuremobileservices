@@ -23,7 +23,8 @@ View:
 
 Controller:
 
-`$scope.authenticate = function (socialService) {
+```javascript
+$scope.authenticate = function (socialService) {
 
 	AzureMobileClient.login(function(isLoggedIn) {
 
@@ -37,7 +38,8 @@ Controller:
 
 	}, socialService);
 
-};`
+};
+```
 
 ###logout
 
