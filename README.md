@@ -23,13 +23,20 @@ View:
 
 Controller:
 
-`$scope.authenticate = function (socialService) {   
-	AzureMobileClient.login(function(isLoggedIn) {   
-		if (isLoggedIn)   
-		{   
-			[Code you want to execute on successful login]   
-		}   
-	}, socialService);   
+`$scope.authenticate = function (socialService) {
+
+	AzureMobileClient.login(function(isLoggedIn) {
+
+		if (isLoggedIn)
+
+		{
+
+			[Code you want to execute on successful login]
+
+		}
+
+	}, socialService);
+
 };`
 
 ###logout
