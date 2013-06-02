@@ -13,7 +13,7 @@ To use the service, declare to variables in the rootScope of the app:
 
 You can then use the following functions:
 
-_login_
+###login
 
 Logs into the Azure Mobile Service using the chosen social network. oAuth token is returned.
 
@@ -23,16 +23,16 @@ View:
 
 Controller:
 
-`$scope.authenticate = function (socialService) {		
-	AzureMobileClient.login(function(isLoggedIn) {
-		if (isLoggedIn)
-		{
-			[Code you want to execute on successful login]
-		}
-	}, socialService);
+`$scope.authenticate = function (socialService) {   
+	AzureMobileClient.login(function(isLoggedIn) {   
+		if (isLoggedIn)   
+		{   
+			[Code you want to execute on successful login]   
+		}   
+	}, socialService);   
 };`
 
-_logout_
+###logout
 
 Logs out of the Azure Mobile Service.
 
