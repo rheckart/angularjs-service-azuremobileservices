@@ -1,10 +1,14 @@
 angularjs-service-azuremobileservices
 =====================================
 
-A service for AngularJS to interact with the [Microsoft Azure Mobile Services Javascript client](http://msdn.microsoft.com/en-us/library/windowsazure/jj554207.aspx).
+A service for AngularJS to interact with the [Microsoft Azure Mobile Services Javascript client](http://msdn.microsoft.com/en-us/library/windowsazure/jj554207.aspx). Uses Javascript promises that the library inherently implements.
 
 Usage
 -----
+
+Include the Azure Mobile Services javascript file in your index.html file like so:
+
+`<script src='https://{your project id}.azure-mobile.net/client/MobileServices.Web-1.0.0.min.js'></script>`
 
 To use the service, declare to variables in the rootScope of the app:
 
@@ -26,13 +30,15 @@ Controller:
 ```javascript
 $scope.authenticate = function (socialService) {
 
-	AzureMobileClient.login(function(isLoggedIn) {
-		if (isLoggedIn)
-		{
-			[Code you want to execute on successful login]
-		}
-	}, socialService);
-
+	AzureMobileClient.login(socialService).then(
+		function(user) {
+			[code to execute on successful login]
+		},
+		function(error) {			
+			if (error != 'canceled') {
+				alert('Problem ' + error);
+			}				
+		});	
 };
 ```
 
@@ -54,85 +60,74 @@ $scope.signOut = function() {
 
 ###getAllData
 
-Gets all data from the specified Azure table. Takes the name of the table as an argument and performs a callback once the data has been retrieved.
+Gets all data from the specified Azure table. Takes the name of the table as an argument and retrieves all the data for that table.
 
 Controller Example:
 
 ```javascript
-AzureMobileClient.getAllData(function(stuff) {
-
-	if (stuff.length == 0)
-	{
-		[Perform action when no records are found]
+AzureMobileClient.getAllData("tableName").then(
+	function(data) {
+		[code to execute on successful data pull]
+	},
+	function(error) {
+		alert(error);
 	}
-	else
-	{
-		[Perform action when records have been returned from Azure]
-	}	
-
-}, "stuff");
+);
 ```
 
 ###addData
 
-Adds a record to the specified Azure table. Takes the name of the table and the row of data as arguments and returns a callback, passing back the new record if successful or the textual error if unsuccessful.
+Adds a record to the specified Azure table. Takes the name of the table and the row of data as arguments and returns the new record if successful or the textual error if unsuccessful.
 
 Controller Example:
 
 ```javascript
 var data = { name: $scope.name, sku: $scope.sku };
 
-AzureMobileClient.addData(function(response) {
-
-	if (typeof response == "object") {		
-		[Success - do whatever needs to be done after the insert]
-	} else {						
-		$scope.$apply($scope.errorMessage = "An error has occurred: " + AzureMobileClient.azureError);
-	}
-
-}, "stuff", data);
+AzureMobileClient.addData("tableName", data).then(
+	function(insertedData) {
+		[Code to execute after successful insert]
+	},
+	function(error) {
+		$scope.$apply($scope.errorMessage = "An error has occurred: " + error.message);
+	});
 ```
 
 ###updateData
 
-Updates a record in the specified Azure table. Takes the name of the table and the row of data as arguments and returns a callback, passing back the updated record if successful or the textual error if unsuccessful. I noticed that sometimes on an update, the Azure id for the record can change, so I pass the updated record back.
+Updates a record in the specified Azure table. Takes the name of the table and the row of data as arguments and passes back the updated record if successful or the textual error if unsuccessful. I noticed that sometimes on an update, the Azure id for the record can change, so I pass the updated record back.
 
 Controller Example:
 
 ```javascript
-AzureMobileClient.updateData(function(response) {
-
-	if (typeof response == "object") {
-		[Success - do whatever needs to be done after the update]
-	} else {						
-		$scope.$apply($scope.errorMessage = "An error has occurred: " + response);
-	}
-
-}, "stuff", data);
+AzureMobileClient.updateData("tableName", data).then(
+	function(updatedData) {
+		[Code to execute after successful update]
+	},
+	function(error) {
+		$scope.$apply($scope.errorMessage = "An error has occurred: " + error.message);
+	});
 ```
 
 ###deleteData
 
-Deletes a record in the specified Azure table. Takes the name of the table and the row of data as arguments and returns a callback, passing back _true_ if successful or _false_ if unsuccessful.
+Deletes a record in the specified Azure table. Takes the name of the table and the row of data as arguments and a promise indicating successful deletion or not.
 
 Controller Example:
 
 ```javascript
-// Using underscore.js to find an element in an array to delete from Azure
-var data = _.findWhere(items, {id: dataid});
+// Using SugarJS to find the record
+var itemToDelete = $scope.data.find({id: Id});
 
-AzureMobileClient.deleteData(function(success) {
-
-	if (success)
-	{
-		[Record successfully deleted]
-	}
-	else
-	{
-		alert("There was a problem deleting the record.");
-	}
-
-}, "stuff", data);
+if (itemToDelete && confirm("Delete " + itemToDelete.itemName + "?")) {
+	AzureMobileClient.deleteData("dataTable", itemToDelete).then(
+		function(success) {
+			$scope.$apply($scope.data.remove(itemToDelete));
+		},
+		function(error) {
+			alert("There was a problem deleting the record. " + error);
+		});
+}
 ```
 
 ###getUser
