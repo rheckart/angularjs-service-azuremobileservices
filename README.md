@@ -10,7 +10,7 @@ Include the Azure Mobile Services javascript file in your index.html file like s
 
 `<script src='https://{your project id}.azure-mobile.net/client/MobileServices.Web-1.0.0.min.js'></script>`
 
-To use the service, declare to variables in the rootScope of the app:
+To use the service, declare two variables in the rootScope of the app:
 
 -	$rootScope.azureURL - the URL given by the Azure portal
 -	$rootScope.azureAppKey - the Application Key given by the Azure portal
